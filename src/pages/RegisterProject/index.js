@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import {View, TextInput, Image, StyleSheet, Text, Button} from 'react-native';
+import {View, TextInput, Image, StyleSheet, Text, Button, Alert} from 'react-native';
 import {RectButton} from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import * as Crypto from 'expo-crypto';
@@ -17,6 +18,8 @@ const RegisterProject = () => {
     const [projectGenericLink, setProjectLink] = useState('');
     const [image, setImage] = useState({});
 
+    const navigation = useNavigation();
+
     useEffect(()=>{
         const getPermissionAsync = async () => {
             const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
@@ -24,6 +27,10 @@ const RegisterProject = () => {
         };
         getPermissionAsync();
     }, []);
+
+    function onHandleToHome(){
+        navigation.navigate('Home');
+    }
 
     const selectImg = async () => {
         const date = new Date().getTime();
@@ -59,6 +66,10 @@ const RegisterProject = () => {
                 ownerUID: uid
             }
         )
+        Alert.alert('Success to send yout idea')
+        onHandleToHome();
+
+
     }
 
 
@@ -100,14 +111,23 @@ const RegisterProject = () => {
                 />
                 <View >
                     <Button title="Pick an image from camera roll"
-                    onPress={() => selectImg()} />
-                    {<Text>image</Text> && <Image source={{ uri: image.uri }} style={{ width: 200, height: 200 }} />}
+                        onPress={() => selectImg()}
+                    />
+
+                    
+                    <Image source={{ uri: image.uri }} style={{ width: 200, height: 200, borderColor:'black', borderWidth:3, borderRadius: 3 }} />
+                    <Text>Image</Text>
                 </View>
 
                 <RectButton
                     onPress={ () => onHandleSend().catch( err => console.log(err) ) }
+                    style={ styles.send }
                 >
-                    <Text>Send</Text>
+                    <Text 
+                        style={styles.sendTxt}
+                    >
+                        Send
+                    </Text>
                 </RectButton>
             </View>
         </>
@@ -135,6 +155,27 @@ const styles = StyleSheet.create({
 
         margin:10
     },
+    send:{
+        
+        alignItems:'center',
+        
+        backgroundColor:'black',
+
+        width:343,
+        height: 52,
+
+        borderRadius:10,
+        borderWidth:3,
+        borderColor:'white',
+    },
+    sendTxt:{
+        
+        paddingTop:10,
+
+        color:'white',
+        
+        fontSize:13,
+    }
 });
 
 export default RegisterProject;

@@ -1,5 +1,5 @@
 import firebase from 'firebase';
-import { firebaseConfig } from '../../../firebaseConfig.json';
+import { firebaseConfig } from '../../../firebaseConfigs.json';
 
 const App = firebase.initializeApp(firebaseConfig);
 firebase.analytics;

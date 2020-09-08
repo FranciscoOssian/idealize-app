@@ -11,8 +11,6 @@ import getProjects from '../../services/firebase/database/realTimeDB/GET/getProj
 const Home = () => {
     const [projects, setProjects] = useState([]);
 
-    const [selectedProject, setSelectedProject] = useState(0);
-
     const navigation = useNavigation();
 
     function handleNavigationToProject(){
@@ -25,15 +23,17 @@ const Home = () => {
         navigation.navigate('RegisterProject')
     }
 
+    const loadProjects = async() => {
+        getProjects()
+            .then(data => {
+                setProjects(data);
+            })
+            .catch(err =>  console.log(err))
+    }
+
     useEffect(() =>{
-        const load = async() => {
-            getProjects()
-                .then(data => {
-                    setProjects(data);
-                })
-                .catch(err =>  console.log(err))
-        }
-        load();
+        
+        loadProjects();
     }, []);
 
 
@@ -45,6 +45,11 @@ return (
             onPress={()=>handleNavigationToRegisterProject()}
         >
             <Text>register project</Text>
+        </RectButton>
+        <RectButton
+            onPress={()=>loadProjects()}
+        >
+            <Text>Reload Projects</Text>
         </RectButton>
         <View>
             <ScrollView
