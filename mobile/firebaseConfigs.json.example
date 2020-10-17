@@ -8,5 +8,6 @@
         "messagingSenderId": "",
         "appId": "",
         "measurementId": ""
-    }
+    },
+    "baseUrlStorage":""
 }
