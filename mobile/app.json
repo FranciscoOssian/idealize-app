@@ -23,7 +23,7 @@
       "favicon": "./assets/favicon.png"
     },
     "android": {
-      "package": "com.yourcompany.yourappname",
+      "package": "com.foln.idealize",
       "versionCode": 1
     }
   }
