@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "idealize-app",
-    "slug": "idealize-app",
+    "slug": "idealize-app turn your ideas real",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,6 +21,10 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "android": {
+      "package": "com.yourcompany.yourappname",
+      "versionCode": 1
     }
   }
 }
