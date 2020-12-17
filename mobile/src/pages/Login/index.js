@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import {TextInput, Text, View, AsyncStorage, Alert, StyleSheet } from 'react-native';
-
 import { RectButton } from 'react-native-gesture-handler';
-
 import { useNavigation } from '@react-navigation/native';
 
 import signInWithEmailAndPassword from '../../services/firebase/auth/signInWithEmailAndPassword';
 
-import { YellowBox } from 'react-native';
-YellowBox.ignoreWarnings(['Setting a timer']);
+import { LogBox } from 'react-native';
+LogBox.ignoreWarnings(['Setting a timer']);
 
 const Login = () => {
 
