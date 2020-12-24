@@ -1,6 +1,6 @@
 # Idealize App
 
-Idealize App é um aplicativo de compartilhamento de ideias, onde você pode postar a sua ideia e criar um grupo, chamar pessoas que apoiam essa idea e quem sabe tirar ela do papel.
+Idealize-App is app to sharing ideas, where you can post your idea and create a group, call people who support that idea and maybe put it into practice.
 
 ## 💻Result of Code
 <div align="center">
