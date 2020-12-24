@@ -4,11 +4,20 @@ import { RectButton } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
 
 import signInWithEmailAndPassword from '../../services/firebase/auth/signInWithEmailAndPassword';
+import persistentDB from '../../services/persistentDB/index';
 
-import { LogBox } from 'react-native';
-LogBox.ignoreWarnings(['Setting a timer']);
+//import { LogBox } from 'react-native';
+//LogBox.ignoreAllLogs();
 
 const Login = () => {
+
+    useEffect(()=>{
+        const run  = async () => {
+            const is_logged = await persistentDB.getCredentials();
+            if(is_logged) handleNavigationToHome();
+        }
+        run();
+    }, []);
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -20,13 +29,12 @@ const Login = () => {
         });
     }
 
-    async function keepCredentials(email, password){
-        try{
-            await AsyncStorage.setItem('email', email);
-            await AsyncStorage.setItem('password', password);
-        }catch(err){
-            console.log(err);
-        }
+    async function keepCredentials({ email, password }){
+        await persistentDB.setCredentials({ email, password });
+    }
+
+    async function getCredentials(){
+        return persistentDB.getCredentials();
     }
 
     async function enter(email, password){
@@ -42,7 +50,7 @@ const Login = () => {
                         code === 'auth/wrong-password'? Alert.alert('wrong password', error.message)  : {}
                     });
             if (!flag) return; //the user can access the next screen even without login, but it is better to avoid
-            await keepCredentials(email, password);
+            await keepCredentials({ email, password });
             await handleNavigationToHome();
         }catch(err){
             console.log('error in function ENTER ', err);

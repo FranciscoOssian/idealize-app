@@ -1,24 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import {Text, StyleSheet, View, ImageBackground, Dimensions} from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
+
+import persistentDB from '../../services/persistentDB/index';
 
 const screenWidth = Math.round(Dimensions.get('window').width);
 const screenHeight = Math.round(Dimensions.get('window').height);
 
 
 const LoggedOut = () => {
+  
+    useEffect(()=>{
+      const run  = async () => {
+        const is_logged = await persistentDB.getCredentials();
+        if(is_logged) handleNavigationToHome();
+      }
+      run();
+    }, []);
 
     const navigation = useNavigation();
 
+    function handleNavigationToHome(){
+      navigation.navigate('Home', {
+      });
+    }
+
     function handleNavigationToRegister(){
-        navigation.navigate('Register', {
-        });
+      navigation.navigate('Register', {
+      });
     }
 
     function handleNavigationToLogin(){
-        navigation.navigate('Login', {
-        });
+      navigation.navigate('Login', {
+      });
     }
 
 return (

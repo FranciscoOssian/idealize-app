@@ -32,7 +32,6 @@ const Home = () => {
     }
 
     useEffect(() =>{
-        
         loadProjects();
     }, []);
 
@@ -41,6 +40,7 @@ const Home = () => {
 return (
     <>
         <Text style={styles.screenName}>Discover</Text>
+        
         <View style={styles.newAndReload}>
             <RectButton
                 onPress={()=>handleNavigationToRegisterProject()}
@@ -63,6 +63,8 @@ return (
                 vertical
             >
                 {projects.map( project => (
+
+
                     <RectButton
                         key={project.projectID}
                         onPress={() => handleNavigationToProject(project)}
@@ -80,6 +82,7 @@ return (
                     
                     
                 ) )}
+
                 <Project
                     uri='a'
                     description=''
