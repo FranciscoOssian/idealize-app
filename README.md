@@ -5,7 +5,9 @@ Idealize-App is app to sharing ideas, where you can post your idea and create a 
 ## 💻Result of Code
 <div align="center">
 </div>
-You can see the result of code in link to gooole play, [go to idealize app on google play](https://play.google.com/store/apps/details?id=com.foln.idealize)
+You can see the result of code in link to gooole play, 
+
+[go to idealize app on google play](https://play.google.com/store/apps/details?id=com.foln.idealize)
 
 ## 🚀 Getting Started
 
