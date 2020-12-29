@@ -2,7 +2,7 @@
   "expo": {
     "name": "idealize-app",
     "slug": "idealize-app-turn-your-ideas-real",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -24,7 +24,7 @@
     },
     "android": {
       "package": "com.foln.idealize",
-      "versionCode": 2
+      "versionCode": 3
     }
   }
 }
