@@ -13,8 +13,25 @@ const Login = () => {
 
     useEffect(()=>{
         const run  = async () => {
-            const is_logged = await persistentDB.getCredentials();
-            if(is_logged) handleNavigationToHome();
+            let flag = true;
+            const credentials = await persistentDB.getCredentials();
+            if(credentials){
+                try{
+                    console.log(credentials);
+                    await signInWithEmailAndPassword(credentials.email, credentials.password)
+                        .catch(error => {
+                            flag = false;
+                            const code = error.code;
+                            code === 'auth/invalid-email' ? Alert.alert('Wrong password.', error.message) : 
+                            code === 'auth/user-disabled' ? Alert.alert('user disabled', error.message)   : 
+                            code === 'auth/user-not-found'? Alert.alert('user not found', error.message)  : 
+                            code === 'auth/wrong-password'? Alert.alert('wrong password', error.message)  : {}
+                        });
+                    if (!flag) return; //the user can access the next screen even without login, but it is better to avoid
+                    await handleNavigationToHome();
+    
+                }catch(err){console.log(err);}
+            }
         }
         run();
     }, []);
