@@ -7,29 +7,35 @@ import persistentDB from '../../../../persistentDB/index'
 const DB = fireApp.database();
 
 const postProject = async (project) => {
-  
+
     const date = new Date().getTime();
     const projectData = JSON.stringify(project);
     
-    const ownerCredentials = await persistentDB.getCredentials();
+    const storedCredentials = await persistentDB.getCredentials();
     
-    const ownerSignature = await Crypto.digestStringAsync(
+    let ownerSignature = await Crypto.digestStringAsync(
       Crypto.CryptoDigestAlgorithm.SHA256,
-      `${ownerCredentials}`
+      `${JSON.stringify(storedCredentials)}`,
       );
 
-    const projectID = await Crypto.digestStringAsync(
-        Crypto.CryptoDigestAlgorithm.SHA256,
-        `${date}${projectData}`
-      );
+    ownerSignature = await Crypto.digestStringAsync(
+      Crypto.CryptoDigestAlgorithm.SHA256,
+      `${ownerSignature}`,
+    );
 
-    project.projectID = projectID;
+    const projectId = await Crypto.digestStringAsync(
+      Crypto.CryptoDigestAlgorithm.SHA256,
+      `${date}${projectData}`
+    );
+
     project.ownerSignature = ownerSignature;
+    project.projectId = projectId;
 
     const projects = await getProjects();
     const result = [project, ...projects];
-    
     await DB.ref(`projects`).set(result);
+    
+    return 0;
 
 }
 
