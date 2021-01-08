@@ -20,7 +20,7 @@ const Home = () => {
     
 
     function handleNavigationToRegisterProject(){
-        navigation.navigate('RegisterProject')
+        navigation.navigate('RegisterProject');
     }
 
     const loadProjects = async() => {
@@ -66,11 +66,10 @@ return (
 
 
                     <RectButton
-                        key={project.projectID}
+                        key={project.projectId}
                         onPress={() => handleNavigationToProject(project)}
                     >
                         <Project
-                            key={project.projectID}
                             title={project.title}
                             description={project.description}
                             uri={project.uri}
@@ -84,6 +83,7 @@ return (
                 ) )}
 
                 <Project
+                    key='0'
                     uri='a'
                     description=''
                     title=''

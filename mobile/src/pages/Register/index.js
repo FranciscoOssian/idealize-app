@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import {TextInput, Text, View, StyleSheet} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { RectButton } from 'react-native-gesture-handler';
+import {Alert} from 'react-native';
 
-import registerUser from '../../services/firebase/auth/registerUser';
+import registerUserAuth from '../../services/firebase/auth/registerUserAuth';
+
+import postUser from '../../services/firebase/database/realTimeDB/POST/postUser';
 
 
 const Register = () => {
@@ -20,9 +23,24 @@ const Register = () => {
     }
 
     async function onHandleRegister(){
-        registerUser(email, password, () => {
-            toLogin();
-        });
+        await registerUserAuth(email, password)
+            .then(async user => {
+                Alert.alert('Success', `Your account with email ${email}, have be registred`);
+                console.log(1);
+                await postUser(user);
+                console.log(2);
+                toLogin();
+            })
+            .catch(error => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+
+                errorCode === 'auth/email-already-in-use' ? Alert.alert('email already in use', errorMessage) : 
+                errorCode === 'auth/invalid-email'        ? Alert.alert('invalid email', errorMessage)        :
+                errorCode === 'auth/operation-not-allowed'? Alert.alert('operation not allowed', errorMessage):
+                errorCode === 'auth/weak-password'        ? Alert.alert('weak password', errorMessage)        : {}
+            })
+            console.log(userCredentials);
     }
 
 return (

@@ -3,32 +3,82 @@ import { useNavigation, useRoute } from '@react-navigation/native'
 import { StyleSheet, ImageBackground, View, Text, Button, Alert, Linking } from 'react-native';
 import { RectButton } from 'react-native-gesture-handler';
 import { FontAwesome, MaterialCommunityIcons, MaterialIcons, AntDesign } from '@expo/vector-icons';
+import * as Crypto from 'expo-crypto';
+
+import persistenDB from '../../services/persistentDB/index';
+
+import deleteProject from '../../services/firebase/functions/deleteProject';
+import deletePhotoProject from '../../services/firebase/database/storage/DELETE/deletePhotoProject';
+
+const hash = async (text) => await Crypto.digestStringAsync(
+    Crypto.CryptoDigestAlgorithm.SHA256,
+    `${text}`,
+);
 
 const Project = () => {
 
     const [projectName, setProjectName] = useState('');
-    const [imgProject, setImgProject] = useState('a'); //starst with 'a' for dont warnig because uri do not be a empyt string
-    const [ownerProjectId, setOwnerProjectId ] = useState(0);
     const [projectDescription, setProjectDescription] = useState('');
-    const [projectTags, setProjectTags] = useState([]);
+    const [imgProject, setImgProject] = useState('a'); //starst with 'a' for dont warnig because uri do not be a empyt string
     const [wppLink, setWppLink] = useState('');
     const [genericLink, setGenericLink] = useState('');
+    const [ownerProjectId, setOwnerProjectId ] = useState('');
+    const [projectTags, setProjectTags] = useState([]);
+    const [ownerSignature, setOwnerSignature] = useState('');
+    const [isOwner, setIsOwner] = useState(false);
+    const [projectIdEst, setProjectId] = useState('');
 
     const route = useRoute();
-
     
     useEffect(()=>{
-        const routeParams = route.params;
-        const { title, description, uri, wppLink, genericLink, ownerUID } = routeParams;
-        setGenericLink(genericLink);
-        setImgProject(uri);
-        setOwnerProjectId(ownerUID);
-        setProjectDescription(description);
-        setProjectName(title);
-        setWppLink(wppLink);
-    }, [])
+        const run = async () => {
+            const routeParams = route.params;
+            const { title, description, uri, wppLink, genericLink, ownerUID, ownerSignature, tags, projectId } = routeParams;
+            setProjectName(title);
+            setProjectDescription(description);
+            setImgProject(uri);
+            setWppLink(wppLink);
+            setGenericLink(genericLink);
+            setOwnerProjectId(ownerUID);
+            setProjectTags(tags);
+            setOwnerSignature(ownerSignature);
+            setProjectId(projectId);
+
+            const myCredentials = await persistenDB.getCredentials();
+
+            const clientHash = await hash(
+                await hash(`${JSON.stringify(myCredentials)}`)
+            );
+
+            if ( clientHash === ownerSignature ){
+                setIsOwner(true);
+                console.log("i am owner of this project :D");
+            }
+        }
+
+        run();
+    }, []);
     
     const navigation = useNavigation();
+
+    function handleNavigateBack(){
+        navigation.goBack();
+    }
+
+    async function onHandleDeleteProject(credentials, projectId){
+        const myCredentials = await persistenDB.getCredentials();
+        const parcialOwnerSignature = await hash(
+            `${JSON.stringify(myCredentials)}`
+        );
+
+        await deleteProject({projectId, parcialOwnerSignature});
+
+        let name = imgProject.replace('https://firebasestorage.googleapis.com/v0/b/idealize-app-4d62a.appspot.com/o/project_photos%2F', '');
+        name = name.replace('?alt=media', '');
+        console.log(name);
+        deletePhotoProject(name);
+        handleNavigateBack();
+    }
     
     
     function onHandleWpp(){
@@ -46,11 +96,6 @@ const Project = () => {
             Linking.openURL(genericLink);
         }catch(err){console.log(err)}
     }
-
-    function handleNavigateBack(){
-        navigation.goBack();
-    }
-
 return(
     <>
         <ImageBackground
@@ -90,7 +135,7 @@ return(
                     {projectDescription}
                 </Text>
                 {projectTags.map( tag => (
-                    <Tex>{tag}</Tex>
+                    <Text>{tag}</Text>
                 ) )}
 
                 <View
@@ -113,6 +158,20 @@ return(
                 </View>
                 
             </View>
+
+            {
+                isOwner === true
+                && 
+                <View style={styles.deleteProjectView} >
+                    <RectButton
+                        onPress = { async ()=>{
+                            onHandleDeleteProject( persistenDB.getCredentials(), projectIdEst );
+                        } }
+                    >
+                        <Text>Delete this project</Text>
+                    </RectButton>
+                </View>
+            }
 
         </ImageBackground>
     </>
@@ -140,6 +199,20 @@ const styles = StyleSheet.create({
         alignItems:'center'
     },
     perfil:{
+        display:'flex',
+        flexDirection:'row',
+
+        justifyContent:'center',
+        alignItems:'center',
+
+        backgroundColor:'#ffff',
+
+        borderRadius:100,
+        
+        width:200,
+        height:50
+    },
+    deleteProjectView:{
         display:'flex',
         flexDirection:'row',
 

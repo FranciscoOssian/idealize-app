@@ -17,7 +17,6 @@ const Login = () => {
             const credentials = await persistentDB.getCredentials();
             if(credentials){
                 try{
-                    console.log(credentials);
                     await signInWithEmailAndPassword(credentials.email, credentials.password)
                         .catch(error => {
                             flag = false;
