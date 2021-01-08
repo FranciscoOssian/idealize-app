@@ -42,7 +42,11 @@ exports.deleteProject = functions.https.onRequest(async (request, response) => {
 
     try{
 
-        if(request.body.parcialOwnerSignature === undefined || request.body.projectId === undefined) response.end('blank spaces');
+        //response.end(JSON.stringify(request.body));
+
+        
+
+        if(request.body.parcialOwnerSignature === undefined || request.body.projectId === undefined) response.end("blank spaces");
     
         const projects = await getProjects();
 
@@ -60,6 +64,8 @@ exports.deleteProject = functions.https.onRequest(async (request, response) => {
         const projectsNews = await del(projectFind, projects);
 
         response.send(projectsNews);
+
+        
 
     }catch(err){console.log("grrrrrr",err)}
 
