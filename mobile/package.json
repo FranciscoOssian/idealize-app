@@ -22,6 +22,7 @@
     "expo-status-bar": "^1.0.2",
     "firebase": "^7.19.0",
     "image-type": "^4.1.0",
+    "jimp": "^0.16.1",
     "react": "~16.11.0",
     "react-dom": "~16.11.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-38.0.2.tar.gz",
